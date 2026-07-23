@@ -27,10 +27,10 @@ export default {
   async execute(message, client) {
     try {
       if (message.author.bot || !message.guild) return;
-if (message.content.trim() === '.end') {
-    await message.channel.send(
-        '# The raid has ended, you can leave now. ⚠️'
-    );
+if (message.author.bot || !message.guild) return;
+
+if (message.content.trim() === '.end' && message.channel.id === '1478900615265386596') {
+    await message.channel.send('# The raid has ended, you can leave now. ⚠️');
     return;
 }
       logger.debug(`Message received from ${message.author.tag}: ${message.content}`);
