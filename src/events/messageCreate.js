@@ -33,13 +33,13 @@ if (message.content.trim() === '.end' && message.channel.id === '147890061526538
     await message.channel.send('# The raid has ended, you can leave now. ⚠️');
     return;
 }
-      if (message.content.startsWith('!role ')) {
+if (message.content.startsWith('?role ')) {
     const args = message.content.trim().split(/\s+/);
     const user = message.mentions.users.first();
     const roleName = args.slice(2).join(' ');
 
     if (!user || !roleName) {
-        return message.reply('Usage: `!role @user Role Name`');
+        return message.reply('Usage: `?role @user Role Name`');
     }
 
     const role = message.guild.roles.cache.find(
