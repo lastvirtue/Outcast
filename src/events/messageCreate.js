@@ -33,6 +33,33 @@ if (message.content.trim() === '.end' && message.channel.id === '147890061526538
     await message.channel.send('# The raid has ended, you can leave now. ⚠️');
     return;
 }
+      if (message.content.startsWith('!role ')) {
+    const args = message.content.trim().split(/\s+/);
+    const user = message.mentions.users.first();
+    const roleName = args.slice(2).join(' ');
+
+    if (!user || !roleName) {
+        return message.reply('Usage: `!role @user Role Name`');
+    }
+
+    const role = message.guild.roles.cache.find(
+        role => role.name.toLowerCase() === roleName.toLowerCase()
+    );
+
+    if (!role) {
+        return message.reply(`I couldn't find a role named **${roleName}**.`);
+    }
+
+    const member = await message.guild.members.fetch(user.id);
+
+    if (member.roles.cache.has(role.id)) {
+        await member.roles.remove(role);
+        await message.reply(`Removed **${role.name}** from **${user.username}**.`);
+    } else {
+        await member.roles.add(role);
+        await message.reply(`Gave **${role.name}** to **${user.username}**.`);
+    }
+}
       logger.debug(`Message received from ${message.author.tag}: ${message.content}`);
 
       const countingProcessed = await handleCountingGame(message, client);
