@@ -61,12 +61,11 @@ export default {
 .setTitle('Welcome Note')
                         .setDescription(welcomeMessage)
                         .setThumbnail(user.displayAvatarURL())
-                        .addFields(
-                            { name: 'User', value: `${user.tag} (${user.id})`, inline: true },
-                            { name: 'Member Count', value: guild.memberCount.toString(), inline: true }
-                        )
                         .setTimestamp()
-                        .setFooter({ text: embedFooter });
+                        .setFooter({
+    text: `You're ${guild.memberCount} member in the server!`,
+    iconURL: guild.iconURL()
+});
                     
                     if (welcomeConfig.welcomeImage) {
                         embed.setImage(welcomeConfig.welcomeImage);
