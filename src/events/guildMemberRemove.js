@@ -52,9 +52,14 @@ export default {
                     });
                 } else {
                     const embed = new EmbedBuilder()
-                        .setTitle(embedTitle)
-                        .setDescription(goodbyeMessage)
-                        .setColor(welcomeConfig.leaveEmbed?.color || getColor('error'))
+                        const embed = new EmbedBuilder()
+    .setColor('#2B2D31')
+    .setAuthor({
+        name: `Goodbye ${user.username}!`,
+        iconURL: guild.iconURL()
+    })
+    .setTitle('Goodbye')
+    .setDescription(goodbyeMessage)
                         .setThumbnail(user.displayAvatarURL())
                         .addFields(
                             { name: 'User', value: `${user.tag} (${user.id})`, inline: true },
@@ -70,10 +75,8 @@ export default {
                     }
 
                     await channel.send({
-                        content: welcomeConfig?.goodbyePing ? `<@${user.id}>` : undefined,
-                        allowedMentions: welcomeConfig?.goodbyePing ? { users: [user.id] } : { parse: [] },
-                        embeds: [embed]
-                    });
+    embeds: [embed]
+});
                 }
             }
         }
