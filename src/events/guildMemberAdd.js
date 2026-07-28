@@ -53,8 +53,12 @@ export default {
                     });
                 } else {
                     const embed = new EmbedBuilder()
-                        .setColor(welcomeConfig.welcomeEmbed?.color || getColor('success'))
-                        .setTitle(embedTitle)
+                        .setColor('#2B2D31')
+.setAuthor({
+    name: `Welcome ${user.username}!`,
+    iconURL: guild.iconURL()
+})
+.setTitle('Welcome Note')
                         .setDescription(welcomeMessage)
                         .setThumbnail(user.displayAvatarURL())
                         .addFields(
@@ -70,10 +74,9 @@ export default {
                         embed.setImage(welcomeConfig.welcomeEmbed.image.url);
                     }
                     
-                    await channel.send({ 
-                        content: messageContent,
-                        embeds: [embed] 
-                    });
+                    await channel.send({
+    embeds: [embed]
+});
                 }
             }
         }
