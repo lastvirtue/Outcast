@@ -60,13 +60,12 @@ export default {
 })
 .setTitle('Welcome Note')
                         .setDescription(welcomeMessage)
-                        .setThumbnail(user.displayAvatarURL())
-                        .setTimestamp()
-                        .setFooter({
+.setThumbnail(user.displayAvatarURL())
+.setTimestamp()
+.setFooter({
     text: `You're ${guild.memberCount} member in the server!`,
     iconURL: guild.iconURL()
 });
-                    
                     if (welcomeConfig.welcomeImage) {
                         embed.setImage(welcomeConfig.welcomeImage);
                     } else if (welcomeConfig.welcomeEmbed?.image?.url) {
