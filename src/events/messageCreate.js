@@ -42,8 +42,10 @@ if (message.content.startsWith('?role ')) {
         return message.reply('Usage: `?role @user Role Name`');
     }
 
-    const role = message.guild.roles.cache.find(role =>
-    role.name.toLowerCase().includes(roleName.toLowerCase())
+    const search = roleName.toLowerCase().replace(/[\s-]/g, '');
+
+const role = message.guild.roles.cache.find(role =>
+    role.name.toLowerCase().replace(/[\s-]/g, '').includes(search)
 );
 
     if (!role) {
