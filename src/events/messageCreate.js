@@ -62,6 +62,47 @@ const role = message.guild.roles.cache.find(role =>
         await message.reply(`Gave **${role.name}** to **${user.username}**.`);
     }
 }
+      if (message.content.startsWith('?kick ')) {
+  if (!message.member.permissions.has('KickMembers'))
+    return message.reply('❌ You do not have permission.');
+
+  const user = message.mentions.members.first();
+  if (!user) return message.reply('❌ Mention someone to kick.');
+
+  if (!user.kickable)
+    return message.reply("❌ I can't kick this user.");
+
+  await user.kick();
+  return message.reply(`✅ Kicked **${user.user.tag}**.`);
+}
+
+
+if (message.content.startsWith('?ban ')) {
+  if (!message.member.permissions.has('BanMembers'))
+    return message.reply('❌ You do not have permission.');
+
+  const user = message.mentions.members.first();
+  if (!user) return message.reply('❌ Mention someone to ban.');
+
+  if (!user.bannable)
+    return message.reply("❌ I can't ban this user.");
+
+  await user.ban();
+  return message.reply(`🔨 Banned **${user.user.tag}**.`);
+}
+
+
+if (message.content.startsWith('?mute ')) {
+  if (!message.member.permissions.has('ModerateMembers'))
+    return message.reply('❌ You do not have permission.');
+
+  const user = message.mentions.members.first();
+  if (!user) return message.reply('❌ Mention someone to mute.');
+
+  await user.timeout(10 * 60 * 1000);
+
+  return message.reply(`🔇 Muted **${user.user.tag}** for 10 minutes.`);
+}
       logger.debug(`Message received from ${message.author.tag}: ${message.content}`);
 
       const countingProcessed = await handleCountingGame(message, client);
