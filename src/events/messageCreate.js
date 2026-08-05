@@ -66,13 +66,20 @@ if (message.content.startsWith('?kick ')) {
   if (!message.member.permissions.has('KickMembers'))
     return message.reply('You do not have permission.');
 
-  const user = message.mentions.members.first();
-  if (!user) return message.reply('Mention someone to kick.');
+  const args = message.content.trim().split(/\s+/);
+  const id = args[1].replace(/[<@!>]/g, '');
+
+  const user = message.mentions.members.first() ||
+    await message.guild.members.fetch(id).catch(() => null);
+
+  if (!user)
+    return message.reply('User not found.');
 
   if (!user.kickable)
     return message.reply("I can't kick this user.");
 
   await user.kick();
+
   return message.reply(`Kicked ${user.user.tag}.`);
 }
 
@@ -81,13 +88,20 @@ if (message.content.startsWith('?ban ')) {
   if (!message.member.permissions.has('BanMembers'))
     return message.reply('You do not have permission.');
 
-  const user = message.mentions.members.first();
-  if (!user) return message.reply('Mention someone to ban.');
+  const args = message.content.trim().split(/\s+/);
+  const id = args[1].replace(/[<@!>]/g, '');
+
+  const user = message.mentions.members.first() ||
+    await message.guild.members.fetch(id).catch(() => null);
+
+  if (!user)
+    return message.reply('User not found.');
 
   if (!user.bannable)
     return message.reply("I can't ban this user.");
 
   await user.ban();
+
   return message.reply(`Banned ${user.user.tag}.`);
 }
 
@@ -97,9 +111,13 @@ if (message.content.startsWith('?mute ')) {
     return message.reply('You do not have permission.');
 
   const args = message.content.trim().split(/\s+/);
-  const user = message.mentions.members.first();
+  const id = args[1].replace(/[<@!>]/g, '');
 
-  if (!user) return message.reply('Mention someone to mute.');
+  const user = message.mentions.members.first() ||
+    await message.guild.members.fetch(id).catch(() => null);
+
+  if (!user)
+    return message.reply('User not found.');
 
   let time = args.slice(2).join('').toLowerCase();
 
@@ -129,13 +147,52 @@ if (message.content.startsWith('?unmute ')) {
   if (!message.member.permissions.has('ModerateMembers'))
     return message.reply('You do not have permission.');
 
-  const user = message.mentions.members.first();
+  const args = message.content.trim().split(/\s+/);
+  const id = args[1].replace(/[<@!>]/g, '');
 
-  if (!user) return message.reply('Mention someone to unmute.');
+  const user = message.mentions.members.first() ||
+    await message.guild.members.fetch(id).catch(() => null);
+
+  if (!user)
+    return message.reply('User not found.');
 
   await user.timeout(null);
 
   return message.reply(`Unmuted ${user.user.tag}.`);
+}
+
+
+if (message.content.startsWith('?unban ')) {
+  if (!message.member.permissions.has('BanMembers'))
+    return message.reply('You do not have permission.');
+
+  const args = message.content.trim().split(/\s+/);
+  const input = args.slice(1).join(' ');
+
+  if (!input)
+    return message.reply('Provide a user ID or username.');
+
+  const id = input.replace(/[<@!>]/g, '');
+
+  const bans = await message.guild.bans.fetch();
+
+  let bannedUser;
+
+  if (/^\d+$/.test(id)) {
+    bannedUser = bans.get(id);
+  } else {
+    bannedUser = bans.find(ban =>
+      ban.user.username.toLowerCase() === input.toLowerCase() ||
+      ban.user.tag.toLowerCase() === input.toLowerCase()
+    );
+  }
+
+  if (!bannedUser)
+    return message.reply('Banned user not found.');
+
+  await message.guild.bans.remove(bannedUser.user.id);
+
+  return message.reply(`Unbanned ${bannedUser.user.tag}.`);
 }
       logger.debug(`Message received from ${message.author.tag}: ${message.content}`);
 
