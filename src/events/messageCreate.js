@@ -42,9 +42,9 @@ if (message.content.startsWith('?role ')) {
         return message.reply('Usage: `?role @user Role Name`');
     }
 
-    const role = message.guild.roles.cache.find(
-        role => role.name.toLowerCase() === roleName.toLowerCase()
-    );
+    const role = message.guild.roles.cache.find(role =>
+    role.name.toLowerCase().includes(roleName.toLowerCase())
+);
 
     if (!role) {
         return message.reply(`I couldn't find a role named **${roleName}**.`);
