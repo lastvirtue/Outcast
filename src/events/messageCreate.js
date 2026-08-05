@@ -62,46 +62,80 @@ const role = message.guild.roles.cache.find(role =>
         await message.reply(`Gave **${role.name}** to **${user.username}**.`);
     }
 }
-      if (message.content.startsWith('?kick ')) {
+if (message.content.startsWith('?kick ')) {
   if (!message.member.permissions.has('KickMembers'))
-    return message.reply('❌ You do not have permission.');
+    return message.reply('You do not have permission.');
 
   const user = message.mentions.members.first();
-  if (!user) return message.reply('❌ Mention someone to kick.');
+  if (!user) return message.reply('Mention someone to kick.');
 
   if (!user.kickable)
-    return message.reply("❌ I can't kick this user.");
+    return message.reply("I can't kick this user.");
 
   await user.kick();
-  return message.reply(`✅ Kicked **${user.user.tag}**.`);
+  return message.reply(`Kicked ${user.user.tag}.`);
 }
 
 
 if (message.content.startsWith('?ban ')) {
   if (!message.member.permissions.has('BanMembers'))
-    return message.reply('❌ You do not have permission.');
+    return message.reply('You do not have permission.');
 
   const user = message.mentions.members.first();
-  if (!user) return message.reply('❌ Mention someone to ban.');
+  if (!user) return message.reply('Mention someone to ban.');
 
   if (!user.bannable)
-    return message.reply("❌ I can't ban this user.");
+    return message.reply("I can't ban this user.");
 
   await user.ban();
-  return message.reply(`🔨 Banned **${user.user.tag}**.`);
+  return message.reply(`Banned ${user.user.tag}.`);
 }
 
 
 if (message.content.startsWith('?mute ')) {
   if (!message.member.permissions.has('ModerateMembers'))
-    return message.reply('❌ You do not have permission.');
+    return message.reply('You do not have permission.');
+
+  const args = message.content.trim().split(/\s+/);
+  const user = message.mentions.members.first();
+
+  if (!user) return message.reply('Mention someone to mute.');
+
+  let time = args.slice(2).join('').toLowerCase();
+
+  if (!time) time = '10m';
+
+  const match = time.match(/^(\d+)(s|m|h|d)$/);
+
+  if (!match)
+    return message.reply('Use time like 10m, 1h, 1d.');
+
+  const amount = Number(match[1]);
+  const unit = match[2];
+
+  const duration =
+    unit === 's' ? amount * 1000 :
+    unit === 'm' ? amount * 60 * 1000 :
+    unit === 'h' ? amount * 60 * 60 * 1000 :
+    amount * 24 * 60 * 60 * 1000;
+
+  await user.timeout(duration);
+
+  return message.reply(`Muted ${user.user.tag} for ${time}.`);
+}
+
+
+if (message.content.startsWith('?unmute ')) {
+  if (!message.member.permissions.has('ModerateMembers'))
+    return message.reply('You do not have permission.');
 
   const user = message.mentions.members.first();
-  if (!user) return message.reply('❌ Mention someone to mute.');
 
-  await user.timeout(10 * 60 * 1000);
+  if (!user) return message.reply('Mention someone to unmute.');
 
-  return message.reply(`🔇 Muted **${user.user.tag}** for 10 minutes.`);
+  await user.timeout(null);
+
+  return message.reply(`Unmuted ${user.user.tag}.`);
 }
       logger.debug(`Message received from ${message.author.tag}: ${message.content}`);
 
