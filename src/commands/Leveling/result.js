@@ -50,6 +50,22 @@ export default {
       });
     }
   },
+};      });
+
+      logger.info(`Result command used`, {
+        user: interaction.user.id,
+        rankedUser: target.id,
+        role: role.id
+      });
+
+    } catch (error) {
+      logger.error("Result command failed", error);
+
+      await InteractionHelper.safeReply(interaction, {
+        content: "❌ I couldn't give that role."
+      });
+    }
+  },
 };    })
     .setDescription(
       `🏆 ${target} has been ranked to **${role.name}**`
