@@ -6,14 +6,14 @@ import { logger } from '../../utils/logger.js';
 export default {
   data: new SlashCommandBuilder()
     .setName("result")
-    .setDescription("Give a rank role to a user")
-    .addUserOption((option) =>
+    .setDescription("Rank a user and give them a role")
+    .addUserOption(option =>
       option
         .setName("user")
-        .setDescription("The user getting the rank")
+        .setDescription("The user to rank")
         .setRequired(true)
     )
-    .addRoleOption((option) =>
+    .addRoleOption(option =>
       option
         .setName("role")
         .setDescription("The rank role to give")
@@ -21,20 +21,36 @@ export default {
     ),
 
   async execute(interaction) {
-    const user = interaction.options.getMember("user");
+    const target = interaction.options.getMember("user");
     const role = interaction.options.getRole("role");
 
-    if (!user || !role) {
-      return InteractionHelper.safeEditReply(interaction, {
+    if (!target || !role) {
+      return InteractionHelper.safeReply(interaction, {
         content: "❌ User or role not found."
       });
     }
 
-    try {
-      await user.roles.add(role);
+    await target.roles.add(role);
 
-      const embed = createEmbed({
-        title: "TSBAH Leaderboard Bot",
+    const embed = createEmbed({
+      title: "TSBAH Leaderboard Bot"
+    })
+    .setDescription(
+      `🏆 ${target} has been ranked to **${role.name}**`
+    )
+    .setThumbnail(target.user.displayAvatarURL());
+
+    await InteractionHelper.safeReply(interaction, {
+      embeds: [embed]
+    });
+
+    logger.info(`Result command used`, {
+      user: interaction.user.id,
+      rankedUser: target.id,
+      role: role.id
+    });
+  },
+};        title: "TSBAH Leaderboard Bot",
       })
       .setDescription(
         `🏆 **Ranking Updated**\n\n` +
