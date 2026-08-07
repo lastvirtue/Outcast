@@ -1,5 +1,4 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { createEmbed } from '../../utils/embeds.js';
 import { InteractionHelper } from '../../utils/interactionHelper.js';
 import { logger } from '../../utils/logger.js';
 
@@ -30,11 +29,28 @@ export default {
       });
     }
 
-    await target.roles.add(role);
+    try {
+      await target.roles.add(role);
 
-    const embed = createEmbed({
-      title: "TSBAH Leaderboard Bot"
-    })
+      await InteractionHelper.safeReply(interaction, {
+        content: `✅ ${target} has been ranked to **${role.name}**`
+      });
+
+      logger.info(`Result command used`, {
+        user: interaction.user.id,
+        rankedUser: target.id,
+        role: role.id
+      });
+
+    } catch (error) {
+      logger.error("Result command failed", error);
+
+      await InteractionHelper.safeReply(interaction, {
+        content: "❌ I couldn't give that role."
+      });
+    }
+  },
+};    })
     .setDescription(
       `🏆 ${target} has been ranked to **${role.name}**`
     )
