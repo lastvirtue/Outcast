@@ -28,6 +28,31 @@ export default {
     try {
       if (message.author.bot || !message.guild) return;
 if (message.author.bot || !message.guild) return;
+      const content = message.content.toLowerCase();
+
+const nWordRegex = /\bn[\s._-]*i[\s._-]*g/i;
+const match = content.match(nWordRegex);
+
+if (match) {
+    const afterNig = content.slice(match.index + match[0].length);
+
+    if (!/^[\s._-]*e/.test(afterNig)) {
+        const member = message.member;
+
+        if (member && member.moderatable) {
+            await member.timeout(
+                2 * 60 * 60 * 1000,
+                'Inappropriate language'
+            );
+
+            await message.channel.send(
+                `${member} has been muted for 2 hours.`
+            );
+        }
+
+        return;
+    }
+}
 
 if (message.content.trim() === '.end' && message.channel.id === '1478900615265386596') {
     await message.channel.send('# The raid has ended, you can leave now. ⚠️');
