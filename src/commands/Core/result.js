@@ -34,7 +34,30 @@ export default {
 
     if (!member) {
       await InteractionHelper.safeEditReply(interaction, {
-        content: '❌ Could not find that user in this server.'
+        content: 'User could not be found in this server.'
+      });
+      return;
+    }
+
+    try {
+      await member.roles.add(role);
+
+      await InteractionHelper.safeEditReply(interaction, {
+        content: `${member} has been ranked to **${role.name}**`
+      });
+
+      logger.info(
+        `Result command: ${targetUser.id} was given ${role.name} by ${interaction.user.id}`
+      );
+    } catch (error) {
+      logger.error('Result command failed', error);
+
+      await InteractionHelper.safeEditReply(interaction, {
+        content: 'I could not give that role to the user.'
+      });
+    }
+  }
+};        content: '❌ Could not find that user in this server.'
       });
       return;
     }
